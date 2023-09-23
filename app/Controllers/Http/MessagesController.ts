@@ -13,6 +13,7 @@ export default class MessagesController {
   }
 
   public async store({ request }) {
+    console.log(request.all())
     const validationSchema = schema.create({
       message: schema.string({ trim: true }, [
         rules.maxLength(255),
@@ -20,13 +21,16 @@ export default class MessagesController {
       socket_id: schema.string({ trim: true }, [
         rules.maxLength(255),
       ]),
+      user_id: schema.number([
+        rules.unsigned(),
+      ]),
     })
     const validatedData = await request.validate({ schema: validationSchema })
     if (validatedData) {
       const message = new Message()
       message.message = validatedData.message
       message.socket_id = validatedData.socket_id
-      message.user_id = 1
+      message.user_id = validatedData.user_id
       await message.save()
       return { msg: 'Message created', message: message }
     }
