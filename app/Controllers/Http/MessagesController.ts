@@ -8,12 +8,11 @@ export default class MessagesController {
 
   public async index() {
     const messages = await Message.all()
-    Ws.io.emit('getAllMessages', messages)
     return messages
   }
 
   public async store({ request }) {
-    console.log(request.all())
+    console.log("Request:", request.all())
     const validationSchema = schema.create({
       message: schema.string({ trim: true }, [
         rules.maxLength(255),
@@ -25,15 +24,12 @@ export default class MessagesController {
         rules.unsigned(),
       ]),
     })
-    const validatedData = await request.validate({ schema: validationSchema })
-    if (validatedData) {
-      const message = new Message()
-      message.message = validatedData.message
-      message.socket_id = validatedData.socket_id
-      message.user_id = validatedData.user_id
-      await message.save()
-      return { msg: 'Message created', message: message }
-    }
+    const message = new Message()
+    message.message = request.all().message
+    message.socket_id = request.all().socket_id
+    message.user_id = request.all().user_id
+    await message.save()
+    return { msg: 'Message created', message: message }
   }
 
   public async show({ params }) {
