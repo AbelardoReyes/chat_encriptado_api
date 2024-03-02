@@ -1,5 +1,4 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Route from '@ioc:Adonis/Core/Route'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import User from 'App/Models/User'
 
@@ -28,7 +27,7 @@ export default class AuthController {
     return { msg: 'Logout success' }
   }
 
-  public async register({ request, auth }: HttpContextContract) {
+  public async register({ request }: HttpContextContract) {
     const validationSchema = schema.create({
       name: schema.string({ trim: true }, [
         rules.maxLength(255),

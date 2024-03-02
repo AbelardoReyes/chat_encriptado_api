@@ -1,8 +1,6 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Route from '@ioc:Adonis/Core/Route'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Message from 'App/Models/Message'
-import Ws from 'App/Services/Ws'
 
 export default class MessagesController {
 
@@ -24,6 +22,9 @@ export default class MessagesController {
         rules.unsigned(),
       ]),
     })
+    if (!validationSchema) {
+      return { msg: 'Validation failed' }
+    }
     const message = new Message()
     message.message = request.all().message
     message.socket_id = request.all().socket_id
